@@ -32,13 +32,63 @@ public class Employee {
 	private String firstName;
 	private String lastName;
 	private String description;
+	private int jobYears;
 
 	protected Employee() {}
 
-	public Employee(String firstName, String lastName, String description) {
+	public Employee(String firstName, String lastName, String description, int jobYears) {
+
+		validateFirstName(firstName);
+		validateLastName(lastName);
+		validateDescription(description);
+		validateJobYears(jobYears);
+
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.description = description;
+		this.jobYears = jobYears;
+	}
+
+	private void validateFirstName(String firstName) throws IllegalArgumentException {
+		if (firstName == null || firstName.trim().isEmpty()) {
+			throw new IllegalArgumentException("First name must be a non-empty string.");
+		}
+		if (!firstName.matches("^[A-Z][a-z]*$")) {
+			throw new IllegalArgumentException("First name must start with a capital letter and contain only letters.");
+		}
+		if (firstName.length() < 2 || firstName.length() > 50) {
+			throw new IllegalArgumentException("First name must be between 2 and 50 characters.");
+		}
+	}
+
+	private void validateLastName(String lastName) throws IllegalArgumentException {
+		if (lastName == null || lastName.trim().isEmpty()) {
+			throw new IllegalArgumentException("Last name must be a non-empty string.");
+		}
+		if (!lastName.matches("^[A-Z][a-z]*$")) {
+			throw new IllegalArgumentException("Last name must start with a capital letter and contain only letters.");
+		}
+		if (lastName.length() < 2 || lastName.length() > 50) {
+			throw new IllegalArgumentException("Last name must be between 2 and 50 characters.");
+		}
+	}
+
+	private void validateDescription(String description) throws IllegalArgumentException {
+		if (description == null || description.trim().isEmpty()) {
+			throw new IllegalArgumentException("Description cannot be null or blank.");
+		}
+		if (description.length() > 100) {
+			throw new IllegalArgumentException("Description must not exceed 100 characters.");
+		}
+	}
+
+	private void validateJobYears(int jobYears) throws IllegalArgumentException {
+		if (jobYears < 0) {
+			throw new IllegalArgumentException("Job years cannot be negative.");
+		}
+		if (jobYears > 50) {
+			throw new IllegalArgumentException("Job years must not exceed 50 years.");
+		}
 	}
 
 	@Override
@@ -47,15 +97,16 @@ public class Employee {
 		if (o == null || getClass() != o.getClass()) return false;
 		Employee employee = (Employee) o;
 		return Objects.equals(id, employee.id) &&
-			Objects.equals(firstName, employee.firstName) &&
-			Objects.equals(lastName, employee.lastName) &&
-			Objects.equals(description, employee.description);
+				Objects.equals(firstName, employee.firstName) &&
+				Objects.equals(lastName, employee.lastName) &&
+				Objects.equals(description, employee.description) &&
+				jobYears == employee.jobYears;
 	}
 
 	@Override
 	public int hashCode() {
 
-		return Objects.hash(id, firstName, lastName, description);
+		return Objects.hash(id, firstName, lastName, description, jobYears);
 	}
 
 	public Long getId() {
@@ -71,6 +122,7 @@ public class Employee {
 	}
 
 	public void setFirstName(String firstName) {
+		validateFirstName(firstName);
 		this.firstName = firstName;
 	}
 
@@ -78,7 +130,9 @@ public class Employee {
 		return lastName;
 	}
 
+
 	public void setLastName(String lastName) {
+		validateLastName(lastName);
 		this.lastName = lastName;
 	}
 
@@ -87,17 +141,26 @@ public class Employee {
 	}
 
 	public void setDescription(String description) {
+		validateDescription(description);
 		this.description = description;
+	}
+
+	public int getJobYears() {return jobYears;}
+
+	public void setJobYears(int jobYears) {
+		validateJobYears(jobYears);
+		this.jobYears = jobYears;
 	}
 
 	@Override
 	public String toString() {
 		return "Employee{" +
-			"id=" + id +
-			", firstName='" + firstName + '\'' +
-			", lastName='" + lastName + '\'' +
-			", description='" + description + '\'' +
-			'}';
+				"id=" + id +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", description='" + description + '\'' +
+				", jobYears=" + jobYears +
+				'}';
 	}
 }
 // end::code[]
