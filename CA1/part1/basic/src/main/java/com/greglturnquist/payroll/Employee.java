@@ -33,20 +33,23 @@ public class Employee {
 	private String lastName;
 	private String description;
 	private int jobYears;
+	private String email;
 
 	protected Employee() {}
 
-	public Employee(String firstName, String lastName, String description, int jobYears) {
+	public Employee(String firstName, String lastName, String description, int jobYears, String email) {
 
 		validateFirstName(firstName);
 		validateLastName(lastName);
 		validateDescription(description);
 		validateJobYears(jobYears);
+		validateEmail(email);
 
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.description = description;
 		this.jobYears = jobYears;
+		this.email = email;
 	}
 
 	private void validateFirstName(String firstName) throws IllegalArgumentException {
@@ -88,6 +91,12 @@ public class Employee {
 		}
 		if (jobYears > 50) {
 			throw new IllegalArgumentException("Job years must not exceed 50 years.");
+		}
+	}
+
+	private void validateEmail(String email) throws IllegalArgumentException {
+		if (email == null || email.trim().isEmpty()) {
+			throw new IllegalArgumentException("Email cannot be null or blank.");
 		}
 	}
 
@@ -150,6 +159,13 @@ public class Employee {
 	public void setJobYears(int jobYears) {
 		validateJobYears(jobYears);
 		this.jobYears = jobYears;
+	}
+
+	public String getEmail() {return email;}
+
+	public void setEmail(String email) {
+		validateEmail(email);
+		this.email = email;
 	}
 
 	@Override
