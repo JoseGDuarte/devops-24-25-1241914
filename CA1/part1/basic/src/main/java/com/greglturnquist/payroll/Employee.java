@@ -34,22 +34,25 @@ public class Employee {
 	private String description;
 	private int jobYears;
 	private String email;
+	private String jobTitle;
 
 	protected Employee() {}
 
-	public Employee(String firstName, String lastName, String description, int jobYears, String email) {
+	public Employee(String firstName, String lastName, String description, int jobYears, String email, String jobTitle) {
 
 		validateFirstName(firstName);
 		validateLastName(lastName);
 		validateDescription(description);
 		validateJobYears(jobYears);
 		validateEmail(email);
+		validateJobTitle(jobTitle);
 
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.description = description;
 		this.jobYears = jobYears;
 		this.email = email;
+		this.jobTitle = jobTitle;
 	}
 
 	private void validateFirstName(String firstName) throws IllegalArgumentException {
@@ -94,9 +97,23 @@ public class Employee {
 		}
 	}
 
-	private void validateEmail(String email) throws IllegalArgumentException {
+	private String validateEmail(String email) {
 		if (email == null || email.trim().isEmpty()) {
-			throw new IllegalArgumentException("Email cannot be null or blank.");
+			throw new IllegalArgumentException("Email cannot be null or empty.");
+		}
+
+		if (!email.matches(("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))) {
+			throw new IllegalArgumentException("Invalid email format: " + email);
+		}
+		return email.trim();
+	}
+
+	private void validateJobTitle(String jobTitle) throws IllegalArgumentException {
+		if (jobTitle == null || jobTitle.trim().isEmpty()) {
+			throw new IllegalArgumentException("JobTitle cannot be null or blank.");
+		}
+		if (jobTitle.length() > 100) {
+			throw new IllegalArgumentException("JobTitle must not exceed 100 characters.");
 		}
 	}
 
@@ -166,6 +183,13 @@ public class Employee {
 	public void setEmail(String email) {
 		validateEmail(email);
 		this.email = email;
+	}
+
+	public String getJobTitle() {return jobTitle;}
+
+	public void setJobTitle (String jobTitle) {
+		validateJobTitle(jobTitle);
+		this.jobTitle = jobTitle;
 	}
 
 	@Override
