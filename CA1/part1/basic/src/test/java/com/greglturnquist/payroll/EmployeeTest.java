@@ -10,10 +10,10 @@ class EmployeeTest {
 
     @Test
     void testValidEmployee() {
-        Employee employee = new Employee("John", "Doe", "A dedicated employee", 5,"frodolovesring@gmail.com","Adventure Freelancer");
+        Employee employee = new Employee("Frodo", "Baggins", "A dedicated employee", 5,"frodolovesring@gmail.com","Adventure Freelancer");
         assertNotNull(employee);
-        assertEquals("John", employee.getFirstName());
-        assertEquals("Doe", employee.getLastName());
+        assertEquals("Frodo", employee.getFirstName());
+        assertEquals("Baggins", employee.getLastName());
         assertEquals("A dedicated employee", employee.getDescription());
         assertEquals(5, employee.getJobYears());
         assertEquals("frodolovesring@gmail.com", employee.getEmail());
@@ -23,7 +23,7 @@ class EmployeeTest {
     @Test
     void testFirstNameNull() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee(null, "Doe", "A dedicated employee", 5, "frodolovesring@gmail.com","Adventure Freelancer");
+            new Employee(null, "Baggins", "A dedicated employee", 5, "frodolovesring@gmail.com","Adventure Freelancer");
         });
         assertEquals("First name must be a non-empty string.", exception.getMessage());
     }
@@ -31,7 +31,7 @@ class EmployeeTest {
     @Test
     void testFirstNameBlank() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee("", "Doe", "A dedicated employee", 5, "frodolovesring@gmail.com", "Adventure Freelancer");
+            new Employee("", "Baggins", "A dedicated employee", 5, "frodolovesring@gmail.com", "Adventure Freelancer");
         });
         assertEquals("First name must be a non-empty string.", exception.getMessage());
     }
@@ -39,7 +39,7 @@ class EmployeeTest {
     @Test
     void testFirstNameInvalidChars() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee("john", "Doe", "A dedicated employee", 5, " frodolovesring@gmail.com", "Adventure Freelancer");
+            new Employee("frodo", "Baggins", "A dedicated employee", 5, " frodolovesring@gmail.com", "Adventure Freelancer");
         });
         assertEquals("First name must start with a capital letter and contain only letters.", exception.getMessage());
     }
@@ -47,7 +47,7 @@ class EmployeeTest {
     @Test
     void testFirstNameLength() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee("J", "Doe", "A dedicated employee", 5, "frodolovesring@gmail.com", "Adventure Freelancer");
+            new Employee("F", "Baggins", "A dedicated employee", 5, "frodolovesring@gmail.com", "Adventure Freelancer");
         });
         assertEquals("First name must be between 2 and 50 characters.", exception.getMessage());
     }
@@ -111,7 +111,7 @@ class EmployeeTest {
     @Test
     void testJobYearsNegative() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee("John", "Doe", "A dedicated employee", -1, "frodolovesring@gmail.com", "Adventure Freelancer");
+            new Employee("Frodo", "Baggins", "A dedicated employee", -1, "frodolovesring@gmail.com", "Adventure Freelancer");
         });
         assertEquals("Job years cannot be negative.", exception.getMessage());
     }
@@ -119,14 +119,14 @@ class EmployeeTest {
     @Test
     void testJobYearsExceedsMax() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Employee("John", "Doe", "A dedicated employee", 51, "frodolovesring@gmail.com", "Adventure Freelancer");
+            new Employee("Frodo", "Baggins", "A dedicated employee", 51, "frodolovesring@gmail.com", "Adventure Freelancer");
         });
         assertEquals("Job years must not exceed 50 years.", exception.getMessage());
     }
 
     @Test
     void testJobYearsValid() {
-        Employee employee = new Employee("John", "Doe", "A dedicated employee", 25, "frodolovesring@gmail.com", "Adventure Freelancer");
+        Employee employee = new Employee("Frodo", "Baggins", "A dedicated employee", 25, "frodolovesring@gmail.com", "Adventure Freelancer");
         assertNotNull(employee);
         assertEquals(25, employee.getJobYears());
     }
