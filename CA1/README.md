@@ -1024,6 +1024,7 @@ Webpack and other frontend-related tasks.
 }
 ~~~
 
+
 As soon as these adjustments were added, I ran the command ``./gradlew build`` to confirm that the
 project was built successfully. This also ensured that the tasks related to the frontend were also
 executed and the frontend code generated.
