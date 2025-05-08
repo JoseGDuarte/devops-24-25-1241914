@@ -87,6 +87,7 @@ only a bit further in the project.
 As seen by the following example, I created an issue regarding one of the main tasks for this project named *"Create an email field and respective 
 tests - issue #1 "* and the message contained a direct reference to the number of that issue.
 
+
 ~~~bash
 git commit -m "Create an email field and respective tests - closes issue #1 "
 ~~~
