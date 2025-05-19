@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+    container_name: h2_database
+    ports:
+      - "8082:8082"  # H2 Web Console
+      - "9092:9092"  # H2 TCP Server
+    networks:
+      - app-network
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    container_name: spring_web_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:h2:tcp://db:9092/~/test
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD:
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
