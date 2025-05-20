@@ -377,6 +377,111 @@ and the trade-offs between automation and manual configuration.
 Ultimately, this flexibility is one of Vagrant’s strengths: even if native support for a provider is unavailable, the core infrastructure 
 can still be adapted manually. This reinforces important DevOps principles, including adaptability, reproducibility, and platform awareness.
 
+---
+# Part 3
+
+This section of the assignment focuses on using Docker to package and run a chat server application. The chat server was created in a previous task, and now the objective is to use Docker to ensure the application behaves the same way across any machine or operating system.
+
+There are two ways this part is tackled:
+•	Option 1: Compile the server application within the Dockerfile.
+•	Option 2: Compile the application locally on the machine, then include the compiled file in the Docker image.
+
+##  Part 3.1
+
+To begin with the first method, I installed Docker and signed in with my DockerHub account.
+
+In this method, everything is built within the Docker environment itself. The Dockerfile begins by using a Gradle image that includes JDK 11 to compile the source code. After building, it switches to a smaller Java runtime image to run the application. The final JAR file is copied into this runtime image, and the server is configured to listen on port 12345.
+
+Here’s the Dockerfile used:
+
+~~~dockerfile
+FROM gradle:jdk17 AS builder
+
+WORKDIR /CA2/part3/version1
+
+RUN git clone https://bitbucket.org/pssmatos/gradle_basic_demo.git
+
+WORKDIR /CA2/part3/version1/gradle_basic_demo
+
+RUN chmod +x gradlew && ./gradlew build --no-daemon
+
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+COPY --from=builder /CA2/part3/version1/gradle_basic_demo/build/libs/basic_demo-0.1.0.jar /app/basic_demo-0.1.0.jar
+
+EXPOSE 59001
+
+ENTRYPOINT ["java", "-cp", "/app/basic_demo-0.1.0.jar", "basic_demo.ChatServerApp", "59001"]
+~~~
+
+Once the Dockerfile was ready, I ran the following command to build the Docker image:
+``docker build -t 1241914/chat-server:v1 .``
+
+By using the **-t** flag, I am able to create a custom name and version so that I can identify it easier.
+Next, I ran the command ``docker images`` to ensure that the image was built correctly.
+
+The next step was to run the Docker container and for that I used the command ``docker run -p 59001:59001 1241914/chat-server:v1``
+
+Now that the chat server was running, I needed to launch the chat client to verify that the application was functioning correctly.
+
+To do this, I opened two new terminals and ran the following commands to start the Client side of the application:
+~~~bash
+./gradlew build
+./gradlew runClient
+~~~
+
+Both clients were able to communicate through the server running inside Docker. After confirming that everything worked, 
+I pushed the second version to DockerHub:
+
+~~~bash
+#tagging the image
+docker tag 1241914/chat-server:v1 zeduarte/chat-server:v1
+#pushing the image to DockerHub
+docker push zeduarte/chat-server:v1
+~~~
+
+##  Part 3.2
+
+In the second approach, I first built the application outside of Docker using my own system, then included the generated .jar file in the image.
+
+I then made a new dockerfile for version2
+
+~~~dockerfile
+FROM gradle:jdk21 AS builder
+
+# creates this directory in the docker image
+WORKDIR /app
+
+# copy the part2 chat app from my host machine to the docker image
+COPY CA1/part2/build/libs/basic_demo-0.1.0.jar /app/basic_demo-0.1.0.jar
+
+EXPOSE 59001
+
+ENTRYPOINT ["java", "-cp", "/app/basic_demo-0.1.0.jar", "basic_demo.ChatServerApp", "59001"]
+~~~
+
+I built the image with ``docker build -t 1241914/chat-server:v2 .``
+
+Then launched the container with ``docker run -p 59001:59001 1241914/chat-server:v2``
+
+Just like in the first method, I opened two new terminals and ran the chat client ``./gradlew runClient``
+
+Both clients were able to communicate through the server running inside Docker. After confirming that everything worked, I pushed the second version to DockerHub:
+
+~~~bash
+#tagging the image
+docker tag 1241914/chat-server:v1 zeduarte/chat-server:v2
+#pushing the image to DockerHub
+docker push zeduarte/chat-server:v2
+~~~
+
+In this part of the assignment, I successfully used Docker to containerize the chat server using two distinct methods:
+1.	Building the project entirely inside Docker.
+2.	Compiling it first on my machine and only using Docker to run the result.
+
+Both methods proved that Docker helps maintain consistency across environments, simplifying the deployment and testing process.
 
 
 
