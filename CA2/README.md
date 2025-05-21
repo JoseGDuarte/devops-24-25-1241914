@@ -101,6 +101,8 @@ this was ready, I executed the command `./mvnw spring-boot:run`. Similarly to my
 externally.
 For this, I used the URL `http://192.168.56.4:8080/` with my VM's IP address that I found using the ``ifconfig`` command.
 
+![Captura de ecrã 2025-04-02, às 16.11.26.png](images/Captura%20de%20ecra%CC%83%202025-04-02%2C%20a%CC%80s%2016.11.26.png)
+
 ### Running the Gradle_Basic_Demo Project (1)
 
 For this part, I am going to focus on building and running the gradle_basic_demo from CA1.2. To fulfill  this project, I needed to run the application in two environments: 
@@ -117,6 +119,9 @@ moved to the gradle_basic_demo directory. Once I ran the appropriate command I c
 that could then communicate with the Server running on my Virtual Machine:
 
 ``./gradlew runClient --args="192.168.56.4 59001" ``
+
+![Captura de ecrã 2025-04-08, às 16.53.05.png](images/Captura%20de%20ecra%CC%83%202025-04-08%2C%20a%CC%80s%2016.53.05.png)
+![Captura de ecrã 2025-04-08, às 16.55.15.png](images/Captura%20de%20ecra%CC%83%202025-04-08%2C%20a%CC%80s%2016.55.15.png)
 
 As seen in the images above, I successfully ran the command and opened the chat windows which ensured
 that the application was running smoothly.
@@ -138,6 +143,8 @@ to build and run the application properly.
 Once the app was up and running, I opened a browser and navigated to http://192.168.56.4:8080/, using the static IP assigned to 
 my VM. The page loaded correctly, displaying the  employee table, which confirmed that the application was successfully deployed 
 and working as intended.
+
+![Captura de ecrã 2025-04-08, às 16.59.46.png](images/Captura%20de%20ecra%CC%83%202025-04-08%2C%20a%CC%80s%2016.59.46.png)
 
 ---
 # Part 2
@@ -429,9 +436,16 @@ Once the Dockerfile was ready, I ran the following command to build the Docker i
 By using the **-t** flag, I am able to create a custom name and version so that I can identify it easier.
 Next, I ran the command ``docker images`` to ensure that the image was built correctly.
 
+![Captura de ecrã 2025-05-13, às 15.41.41.png](images/Captura%20de%20ecra%CC%83%202025-05-13%2C%20a%CC%80s%2015.41.41.png)
+
+
 The next step was to run the Docker container and for that I used the command ``docker run -p 59001:59001 1241914/chat-server:v1``
 
+![Captura de ecrã 2025-05-13, às 15.28.06.png](images/Captura%20de%20ecra%CC%83%202025-05-13%2C%20a%CC%80s%2015.28.06.png)
+
 Now that the chat server was running, I needed to launch the chat client to verify that the application was functioning correctly.
+
+![Captura de ecrã 2025-05-13, às 15.42.10.png](images/Captura%20de%20ecra%CC%83%202025-05-13%2C%20a%CC%80s%2015.42.10.png)
 
 To do this, I opened two new terminals and ran the following commands to start the Client side of the application:
 ~~~bash
@@ -439,8 +453,11 @@ To do this, I opened two new terminals and ran the following commands to start t
 ./gradlew runClient
 ~~~
 
-Both clients were able to communicate through the server running inside Docker. After confirming that everything worked, 
-I pushed the second version to DockerHub:
+Both clients were able to communicate through the server running inside Docker. 
+
+![Captura de ecrã 2025-05-13, às 15.29.00.png](images/Captura%20de%20ecra%CC%83%202025-05-13%2C%20a%CC%80s%2015.29.00.png)
+
+After confirming that everything worked, I pushed the second version to DockerHub:
 
 ~~~bash
 #tagging the image
@@ -475,6 +492,8 @@ Then launched the container with ``docker run -p 59001:59001 1241914/chat-server
 
 Just like in the first method, I opened two new terminals and ran the chat client ``./gradlew runClient``
 
+![Captura de ecrã 2025-05-13, às 16.53.04.png](images/Captura%20de%20ecra%CC%83%202025-05-13%2C%20a%CC%80s%2016.53.04.png)
+
 Both clients were able to communicate through the server running inside Docker. After confirming that everything worked, I pushed the second version to DockerHub:
 
 ~~~bash
@@ -483,6 +502,10 @@ docker tag 1241914/chat-server:v1 zeduarte/chat-server:v2
 #pushing the image to DockerHub
 docker push zeduarte/chat-server:v2
 ~~~
+
+![Captura de ecrã 2025-05-13, às 17.03.32.png](images/Captura%20de%20ecra%CC%83%202025-05-13%2C%20a%CC%80s%2017.03.32.png)
+![Captura de ecrã 2025-05-13, às 17.03.48.png](images/Captura%20de%20ecra%CC%83%202025-05-13%2C%20a%CC%80s%2017.03.48.png)
+
 
 In this part of the assignment, I successfully used Docker to containerize the chat server using two distinct methods:
 1.	Building the project entirely inside Docker.
@@ -593,6 +616,9 @@ networks:
 After setting everything up, I launched the services using:
 
 ```docker-compose up --build ```
+
+![Captura de ecrã 2025-05-19, às 11.32.23.png](images/Captura%20de%20ecra%CC%83%202025-05-19%2C%20a%CC%80s%2011.32.23.png)
+![Captura de ecrã 2025-05-21, às 11.10.15.png](images/Captura%20de%20ecra%CC%83%202025-05-21%2C%20a%CC%80s%2011.10.15.png)
 
 Once the containers were running, I could successfully access:
 •	The application at: http://localhost:8080
