@@ -15,6 +15,14 @@ pipeline {
                 git branch: 'main', url: env.REPO_URL
             }
         }
+
+        stage('Check PATH') {
+                    steps {
+                        sh 'echo $PATH'
+                        sh 'which docker || echo "docker not found"'
+                    }
+                }
+
         stage('Create Dockerfile') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
