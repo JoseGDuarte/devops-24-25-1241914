@@ -18,8 +18,9 @@ pipeline {
 
         stage('Check PATH') {
                     steps {
-                        sh 'echo $PATH'
-                        sh 'which docker || echo "docker not found"'
+                       sh 'echo "PATH: $PATH"'
+                       sh 'ls -l /usr/local/bin/docker || echo "Docker binary not found"'
+                       sh '/usr/local/bin/docker --version || echo "Docker not working"'
                     }
                 }
 
