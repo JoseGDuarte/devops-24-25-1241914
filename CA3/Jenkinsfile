@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Assemble') {
             steps {
-                dir('CA2/Part1/gradle_basic_demo') {
+                dir('CA1/Part2/') {
                     echo 'Assembling...'
                     sh 'chmod +x gradlew'
                     sh './gradlew clean assemble'
@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                dir('CA2/Part1/gradle_basic_demo') {
+                dir('CA1/Part2/') {
                     echo 'Running Tests...'
                     sh './gradlew test'
                     junit 'build/test-results/test/*.xml'
@@ -28,7 +28,7 @@ pipeline {
         }
         stage('Archive') {
             steps {
-                dir('CA2/Part1/gradle_basic_demo') {
+                dir('CA1/Part2/') {
                     echo 'Archiving artifacts...'
                     archiveArtifacts artifacts: 'build/libs/*.jar', allowEmptyArchive: true
                 }
