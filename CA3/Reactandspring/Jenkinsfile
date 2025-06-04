@@ -48,17 +48,18 @@ pipeline {
         stage('Archive') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
-                    echo 'Archiving...'
-                    archiveArtifacts artifacts: 'build/libs/*.jar', allowEmptyArchive: true
+                    echo 'Renaming and Archiving JAR...'
+                    sh 'mv build/libs/react-and-spring-data-rest-basic-0.0.1-SNAPSHOT.jar build/libs/app.jar'
+                    archiveArtifacts artifacts: 'build/libs/app.jar', allowEmptyArchive: true
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
                     script {
                         echo 'Building Docker Image...'
-                        sh 'docker info'
                         def image = docker.build("${DOCKER_IMAGE}:${BUILD_ID}", '.')
                         docker.withRegistry(DOCKER_REGISTRY, DOCKER_CREDENTIALS_ID) {
                             image.push()
@@ -67,7 +68,6 @@ pipeline {
                 }
             }
         }
-    }
 
     post {
         always {
