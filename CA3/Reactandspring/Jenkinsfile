@@ -16,14 +16,6 @@ pipeline {
             }
         }
 
-        stage('Check PATH') {
-                    steps {
-                       sh 'echo "PATH: $PATH"'
-                       sh 'ls -l /usr/local/bin/docker || echo "Docker binary not found"'
-                       sh '/usr/local/bin/docker --version || echo "Docker not working"'
-                    }
-                }
-
         stage('Create Dockerfile') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
