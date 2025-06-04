@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         PATH = "/usr/local/bin:$PATH"
-        DOCKER_CREDENTIALS_ID = 'docker-credentials'
+        DOCKER_CREDENTIALS_ID = 'jenkins_docker'
         DOCKER_IMAGE = "zeduarte/jenkins-image"
         DOCKER_REGISTRY = "https://index.docker.io/v1/"
         REPO_URL = 'https://github.com/JoseGDuarte/devops-24-25-1241914.git'
@@ -12,15 +12,32 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out from repository...'
+                echo 'Cloning repository...'
                 git branch: 'main', url: env.REPO_URL
+            }
+        }
+
+        stage('Create Dockerfile') {
+            steps {
+                dir('CA1/Part3/react-and-spring-data-rest-basic') {
+                    echo 'Creating Dockerfile...'
+                    script {
+                        writeFile file: 'Dockerfile', text: '''
+                            FROM openjdk:17-jdk-alpine
+                            WORKDIR /app
+                            COPY build/libs/app.jar app.jar
+                            EXPOSE 8080
+                            ENTRYPOINT ["java", "-jar", "app.jar"]
+                        '''
+                    }
+                }
             }
         }
 
         stage('Assemble') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
-                    echo 'Assembling...'
+                    echo 'Assembling project...'
                     sh 'chmod +x gradlew'
                     sh './gradlew clean assemble'
                 }
@@ -30,7 +47,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
-                    echo 'Testing...'
+                    echo 'Running unit tests...'
                     sh './gradlew test'
                     junit '**/build/test-results/test/*.xml'
                 }
@@ -48,7 +65,7 @@ pipeline {
                         keepAll: true,
                         reportDir: 'build/docs/javadoc',
                         reportFiles: 'index.html',
-                        reportName: 'Javadoc'
+                        reportName: 'API Documentation'
                     ])
                 }
             }
@@ -57,21 +74,33 @@ pipeline {
         stage('Archive') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
-                    echo 'Renaming and Archiving JAR...'
+                    echo 'Archiving JAR...'
                     sh 'mv build/libs/react-and-spring-data-rest-basic-0.0.1-SNAPSHOT.jar build/libs/app.jar'
                     archiveArtifacts artifacts: 'build/libs/app.jar', allowEmptyArchive: true
                 }
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build & Push Docker Image') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
                     script {
-                        echo 'Building Docker Image...'
-                        def image = docker.build("${DOCKER_IMAGE}:${BUILD_ID}", '.')
-                        docker.withRegistry(DOCKER_REGISTRY, DOCKER_CREDENTIALS_ID) {
-                            image.push()
+                        echo 'Building and pushing Docker image...'
+                        try {
+                            sh 'docker info'
+
+                            def imageTag = "${DOCKER_IMAGE}:${BUILD_ID}"
+                            sh "docker build -t ${imageTag} ."
+
+                            docker.withRegistry(DOCKER_REGISTRY, DOCKER_CREDENTIALS_ID) {
+                                sh "docker push ${imageTag}"
+                            }
+
+                            echo "✅ Docker image pushed: ${imageTag}"
+                        } catch (err) {
+                            echo " Docker build or push failed: ${err.getMessage()}"
+                            echo "Check if Docker is running and credentials are correct."
+                            currentBuild.result = 'UNSTABLE'
                         }
                     }
                 }
@@ -81,7 +110,14 @@ pipeline {
 
     post {
         always {
+            echo ' Cleaning workspace...'
             cleanWs()
+        }
+        success {
+            echo ' Pipeline executed successfully!'
+        }
+        failure {
+            echo ' Pipeline failed!'
         }
     }
 }
