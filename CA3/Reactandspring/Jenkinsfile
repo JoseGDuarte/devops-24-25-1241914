@@ -17,37 +17,13 @@ pipeline {
             }
         }
 
-        stage('Create Dockerfile') {
-            steps {
-                dir('CA1/Part3/react-and-spring-data-rest-basic') {
-                    echo 'Creating Dockerfile...'
-                    script {
-                        writeFile file: 'Dockerfile', text: '''
-                        # Use the official OpenJDK image as a parent image
-                        FROM openjdk:17-jdk-alpine
-
-                        # Set the working directory in the container
-                        WORKDIR /app
-
-                        # Copy the JAR file from the host to the container
-                        COPY build/libs/*.jar app.jar
-
-                        # Expose the port that the application will run on
-                        EXPOSE 8080
-
-                        # Run the JAR file
-                        ENTRYPOINT ["java", "-jar", "app.jar"]
-                        '''
-                    }
-                }
-            }
-        }
         stage('Assemble') {
             steps {
                 dir('CA1/Part3/react-and-spring-data-rest-basic') {
                     echo 'Assembling...'
                     sh 'chmod +x gradlew'
                     sh './gradlew clean assemble'
+                    sh 'mv build/libs/*.jar build/libs/app.jar'
                 }
             }
         }
