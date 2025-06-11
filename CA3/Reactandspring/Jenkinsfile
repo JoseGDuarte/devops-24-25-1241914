@@ -96,7 +96,7 @@ pipeline {
                                 sh "docker push ${imageTag}"
                             }
 
-                            echo "✅ Docker image pushed: ${imageTag}"
+                            echo "Docker image pushed: ${imageTag}"
                         } catch (err) {
                             echo " Docker build or push failed: ${err.getMessage()}"
                             echo "Check if Docker is running and credentials are correct."
